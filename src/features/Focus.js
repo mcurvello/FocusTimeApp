@@ -4,8 +4,9 @@ import { colors } from "../utils/colors";
 
 import { TextInput } from "react-native-paper";
 import { RoundedButton } from "../components/RoundedButton";
+import { spacing } from "../utils/sizes";
 
-export const Focus = () => {
+export const Focus = ({ addSubject }) => {
   const [subject, setSubject] = useState(null);
 
   return (
@@ -16,7 +17,11 @@ export const Focus = () => {
           label="What would you like to focus on?"
           onChangeText={setSubject}
         />
-        <RoundedButton title="+" size={50} />
+        <RoundedButton
+          title="+"
+          size={50}
+          onPress={() => addSubject(subject)}
+        />
       </View>
     </View>
   );
@@ -27,14 +32,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   inputContainer: {
-    padding: 20,
+    padding: spacing.lg,
     justifyContent: "top",
     flexDirection: "row",
     alignItems: "center",
   },
   textInput: {
     flex: 1,
-    marginRight: 10,
+    marginRight: spacing.sm,
   },
   text: {
     color: colors.white,
