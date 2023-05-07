@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Vibration } from "react-native";
 import React, { useState } from "react";
 import { ProgressBar } from "react-native-paper";
 
@@ -6,18 +6,33 @@ import { Countdown } from "../components/Countdown";
 import { RoundedButton } from "../components/RoundedButton";
 import { spacing } from "../utils/sizes";
 import { colors } from "../utils/colors";
+import { Timing } from "./Timing";
 
-export const Timer = ({ focusSubject }) => {
+const ONE_SECOND_IN_MS = 1000;
+
+const PATTERN = [
+  1 * ONE_SECOND_IN_MS,
+  1 * ONE_SECOND_IN_MS,
+  1 * ONE_SECOND_IN_MS,
+  1 * ONE_SECOND_IN_MS,
+  1 * ONE_SECOND_IN_MS,
+];
+
+export const Timer = ({ focusSubject, clearSubject }) => {
   const [isStarted, setIsStarted] = useState(false);
   const [progress, setProgress] = useState(1);
+  const [minutes, setMinutes] = useState(0.1);
 
   return (
     <View style={styles.container}>
       <View style={styles.countdown}>
         <Countdown
+          minutes={minutes}
           isPaused={!isStarted}
           onProgress={setProgress}
-          onEnd={() => {}}
+          onEnd={() => {
+            Vibration.vibrate(PATTERN);
+          }}
         />
         <View style={styles.content}>
           <Text style={styles.title}>Focusing on:</Text>
@@ -31,6 +46,9 @@ export const Timer = ({ focusSubject }) => {
           style={{ height: spacing.sm }}
         />
       </View>
+      <View style={styles.timingWrapper}>
+        <Timing onChangeTime={setMinutes} />
+      </View>
       <View style={styles.buttonWrapper}>
         {!isStarted && (
           <RoundedButton title="start" onPress={() => setIsStarted(true)} />
@@ -38,6 +56,9 @@ export const Timer = ({ focusSubject }) => {
         {isStarted && (
           <RoundedButton title="pause" onPress={() => setIsStarted(false)} />
         )}
+      </View>
+      <View style={styles.clearSubjectWrapper}>
+        <RoundedButton size={50} title="-" onPress={clearSubject} />
       </View>
     </View>
   );
@@ -55,9 +76,13 @@ const styles = StyleSheet.create({
   buttonWrapper: {
     flex: 0.3,
     flexDirection: "row",
-    padding: 15,
+    padding: spacing.md,
     justifyContent: "center",
     alignItems: "center",
+  },
+  clearSubjectWrapper: {
+    flexDirection: "row",
+    justifyContent: "center",
   },
   content: {
     paddingTop: spacing.xxl,
@@ -73,5 +98,9 @@ const styles = StyleSheet.create({
   },
   progress: {
     paddingTop: spacing.sm,
+  },
+  timingWrapper: {
+    flex: 0.1,
+    paddingTop: spacing.xxl,
   },
 });
